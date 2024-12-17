@@ -69,7 +69,10 @@ export function HomePage() {
       </Helmet>
       <Wrapper>
         <Box>
-          <Title>할일</Title>
+          <Title>
+            할일 ({todoList.filter(todo => todo.completed).length} /
+            {todoList.length})
+          </Title>
           <TodoInput setTodoList={setTodoLists}></TodoInput>
           <TodoList>
             {todoList.map(todo => (
