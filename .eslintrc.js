@@ -4,6 +4,8 @@ const path = require('path');
 const prettierOptions = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '.prettierrc'), 'utf8'),
 );
+// endOfLine을 강제로 설정 (auto로 변경 가능)
+prettierOptions.endOfLine = 'auto';
 
 module.exports = {
   extends: ['react-app', 'prettier'],

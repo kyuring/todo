@@ -5,9 +5,9 @@ import styled from 'styled-components';
 const Box = styled.div<{ isEditing?: boolean }>`
   display: flex;
   align-items: center;
-  padding: ${props => (props.isEditing ? '5px 0px' : '15px 15px')};
+  padding: ${props => (props.isEditing ? '5px 0px' : '5px 15px')};
   width: 100%;
-  font-size: 1.1em;
+  /* font-size: 1.1em; */
   border: 1px solid #eee;
 `;
 
@@ -20,19 +20,19 @@ const Input = styled.input`
 // TodoInput 컴포넌트에 전달하는 props 정의
 // setTodoList 함수는 새로운 todoList를 받아서 기존 todoList에 추가
 export default function TodoInput({
-  setTodoList,
+  addTodo,
   isEditing,
   editContent,
   editModeTodo,
   editTodo,
 }: {
-  setTodoList?: (todoList: ITodoItem) => void;
+  addTodo?: (content: string) => void;
   isEditing?: boolean;
   editContent?: string;
   editModeTodo?: () => void;
   editTodo?: (content: string) => void;
 }) {
-  const [content, setContent] = React.useState<string>('');
+  const [content, setContent] = React.useState<string>(editContent || '');
   return (
     <Box isEditing={isEditing}>
       <Input
@@ -50,14 +50,7 @@ export default function TodoInput({
           if (isEditing) {
             editTodo && editTodo(content);
           } else {
-            setTodoList &&
-              setTodoList({
-                // setTodoList가 있으면 실행함
-                id: '0',
-                completed: false,
-                content: content,
-                editing: false,
-              });
+            addTodo && addTodo(content);
             setContent('');
           }
         }}

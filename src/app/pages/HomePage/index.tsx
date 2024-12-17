@@ -3,6 +3,9 @@ import { Helmet } from 'react-helmet-async';
 import styled from 'styled-components';
 import TodoInput from 'app/components/TodoInput';
 import TodoItem from 'app/components/TodoItem';
+import { useTodoSlice } from 'store/todo';
+import { useDispatch, useSelector } from 'react-redux';
+import { TodoListSelector } from 'store/todo/selectors';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -18,6 +21,7 @@ const Box = styled.div`
   height: 600px;
   background-color: white;
   box-shadow: 0px 25px 100px -60px rgba(0, 0, 0, 0.18);
+  border-radius: 15px;
 `;
 
 const Title = styled.h1`
@@ -40,25 +44,29 @@ export function HomePage() {
   // setTodoList 함수는 인자로는 두가지를 받는데
   // 첫번째는 새로운 todoList
   // 두번째는 기존 todoList
-  const [todoList, setTodoList] = React.useState<ITodoItem[]>([
-    {
-      id: '1',
-      completed: true,
-      content: '첫번째 TodoItem',
-      editing: false,
-    },
-    {
-      id: '2',
-      completed: true,
-      content: '두번째 TodoItem',
-      editing: true,
-    },
-  ]);
+  // const [todoList, setTodoList] = React.useState<ITodoItem[]>([
+  //   {
+  //     id: '1',
+  //     completed: true,
+  //     content: '첫번째 TodoItem',
+  //     editing: false,
+  //   },
+  //   {
+  //     id: '2',
+  //     completed: true,
+  //     content: '두번째 TodoItem',
+  //     editing: true,
+  //   },
+  // ]);
+
+  const { TodoActions } = useTodoSlice();
+  const todoList = useSelector(TodoListSelector);
+  const dispatch = useDispatch();
 
   // ...todoList : 기존 todoList
   // todo : 새로운 todoItem
   const setTodoLists = (todo: ITodoItem) => {
-    setTodoList([todo, ...todoList]);
+    //setTodoList(null);
   };
 
   return (
@@ -73,10 +81,33 @@ export function HomePage() {
             할일 ({todoList.filter(todo => todo.completed).length} /
             {todoList.length})
           </Title>
-          <TodoInput setTodoList={setTodoLists}></TodoInput>
+          <TodoInput
+            addTodo={(content: string) =>
+              dispatch(TodoActions.addTodo(content))
+            }
+          ></TodoInput>
           <TodoList>
             {todoList.map(todo => (
-              <TodoItem todo={todo} />
+              <TodoItem
+                todo={todo}
+                checkTodo={() =>
+                  dispatch(TodoActions.checkTodo({ id: todo.id }))
+                }
+                editModeTodo={() =>
+                  dispatch(TodoActions.editModeTodo({ id: todo.id }))
+                }
+                editTodo={(content: string) =>
+                  dispatch(
+                    TodoActions.editTodo({
+                      id: todo.id,
+                      content: content,
+                    }),
+                  )
+                }
+                deleteTodo={() =>
+                  dispatch(TodoActions.deleteTodo({ id: todo.id }))
+                }
+              />
             ))}
           </TodoList>
         </Box>
